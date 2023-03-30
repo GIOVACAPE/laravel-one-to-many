@@ -4,7 +4,7 @@
             <div class="logo_laravel d-flex align-items-center">
                 <img src="{{ asset('images/cloud.png') }}" alt="" width="50" height="50"
                     class="rounded-5 mx-1">
-                Boolfolio di GC
+                Boolfolio di gc
             </div>
             {{-- config('app.name', 'Laravel') --}}
         </a>
@@ -25,7 +25,11 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link @if (request()->routeIs('admin.projects*')) active @endif"
-                            href="{{ route('admin.projects.index') }}">{{ __('Progetti') }}</a>
+                            href="{{ route('admin.projects.index') }}">{{ __('Projects') }}</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @if (request()->routeIs('admin.categories*')) active @endif"
+                            href="{{ route('admin.categories.index') }}">{{ __('Categorie') }}</a>
                     </li>
                 @endauth
             </ul>

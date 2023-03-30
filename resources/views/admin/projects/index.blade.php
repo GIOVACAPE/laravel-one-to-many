@@ -10,15 +10,25 @@
     </header>
     {{-- filtro --}}
     <div class="row d-flex justify-content-end align-items-center">
-        <div class="col-md-2">
-            <form action="{{ route('admin.projects.index') }}" method="GET">
+        <div class="col-md-2 ">
+            <form action="{{ route('admin.projects.index') }}" method="GET" class="d-flex align-item-center">
                 <div class="input-group mb-3">
                     <button class="btn btn-outline-secondary" type="submit">Filtra</button>
-                    <select class="form-select" name="filter">
+                    <select class="form-select" name="status_filter">
                         <option selected value="">Tutte...</option>
-                        <option value="published">Pubblicati</option>
-                        <option value="drafts">Bozze</option>
+                        <option @if ($status_filter === 'published') selected @endif value="published">Pubblicati</option>
+                        <option @if ($status_filter === 'drafts') selected @endif value="drafts">Bozze</option>
                     </select>
+                    <div class="input-group mt-3">
+                        <select class="form-select" name="category_filter" id="category_filter">
+                            <option value="" selected>Tutte le categoria</option>
+                            @foreach ($categories as $category)
+                                <option @if ($category_filter == $category->id) selected @endif value="{{ $category->id }}">
+                                    {{ $category->label }}</option>
+                            @endforeach
+                        </select>
+
+                    </div>
                 </div>
             </form>
         </div>
@@ -30,8 +40,9 @@
                 <th scope="col">#</th>
                 <th scope="col">Title</th>
                 <th scope="col">Author</th>
-                <th scope="col">Description</th>
-                <th scope="col">Slug</th>
+                <th scope="col">Categoria</th>
+                {{-- <th scope="col">Description</th> --}}
+                {{-- <th scope="col">Slug</th> --}}
                 <th scope="col">Stato</th>
                 <th scope="col">Link</th>
                 <th scope="col">Creato il</th>
@@ -46,8 +57,19 @@
                     <th scope="row">{{ $project->id }}</th>
                     <td>{{ $project->title }}</td>
                     <td>{{ $project->author }}</td>
-                    <td>{{ $project->description }}</td>
-                    <td>{{ $project->slug }}</td>
+                    {{-- ! Null operator il punto interrogativo
+                    <td>{{ $project->category?->label }}</td> --}}
+                    <td>
+                        @if ($project->category)
+                            <span class="badge"
+                                style="background-color: {{ $project->category->color }}">{{ $project->category->label }}</span>
+                        @else
+                            -
+                        @endif
+
+                    </td>
+                    {{-- <td>{{ $project->description }}</td> --}}
+                    {{-- <td>{{ $project->slug }}</td> --}}
                     <td>
                         <form action="{{ route('admin.projects.toggle', $project->id) }}" method="POST">
                             @method('PATCH')
@@ -97,6 +119,33 @@
                 {{ $projects->links() }}
             @endif
         </div>
+
+        {{-- progetti per catehorie --}}
+        <section id="categories-projects" class="my-5 text-white">
+            <hr>
+            <h2 class="mb-5 shadow text">Projects by Categories</h2>
+            <div class="row">
+                @foreach ($categories as $category)
+                    <div class="col">
+                        <h3 class="my-3 text-secondary">
+                            {{ $category->label }} <small>({{ count($category->projects) }})</small>
+                        </h3>
+                        @forelse ($category->projects as $project)
+                            <div>
+                                <a class="text-decoration-none text-white"
+                                    href="{{ route('admin.projects.show', $project->id) }}">{{ $project->title }}</a>
+                            </div>
+
+                        @empty
+                            -
+                        @endforelse
+                    </div>
+                @endforeach
+
+            </div>
+
+
+        </section>
     </footer>
 @endsection
 @section('scripts')

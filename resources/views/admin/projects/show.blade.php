@@ -47,6 +47,12 @@
                         {{ $project->is_published ? 'Metti in bozza' : 'Pubblica' }}
                     </button>
                 </form>
+                {{-- ! Null operator il punto interrogativo --}}
+                @if ($project->category?->label)
+                    <span class="badge rounded-pill text-bg-info mt-4">{{ $project->category?->label }}</span>
+                @else
+                    -
+                @endif
             </div>
 
         </div>
